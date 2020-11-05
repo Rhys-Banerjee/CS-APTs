@@ -1,69 +1,43 @@
 import java.util.*;
 public class LeafCollector {
-    ArrayList<String> huh = new ArrayList<>();
-    private int height(TreeNode root){
-        if(root == null) return 0;
-        return 1+Math.max(height(root.left),height(root.right));
-    }
     public String[] getLeaves(TreeNode tree) {
-        int height = (height(tree)); 
-        StringBuilder str = new StringBuilder();
+        ArrayList<String> raw = new ArrayList<>();
         if(tree == null){
-            return null;
-        }
-        if(tree.left == null && tree.right == null){
-            String[] ret = new String[1];
-            ret[1] = String.valueOf(tree.info);
+            String[] ret = new String[0];
             return ret;
-       }
-       if(tree.left != null && tree.right == null){
-           tree = (addAndReplace(tree.left, height, str));
-           huh.add(str.toString());
-           getLeaves(tree.left);
-           getLeaves(tree.right);
-           String[] ret = new String[huh.size()];
-           for(int i=0; i<huh.size(); i++){
-               ret[i] = huh.get(i);
-           }
-           return ret;
-       }
-       if(tree.right != null && tree.left == null){
-        tree = (addAndReplace(tree.right, height, str));
-        huh.add(str.toString());
-        getLeaves(tree.left);
-        getLeaves(tree.right);
-        String[] ret = new String[huh.size()];
-        for(int i=0; i<huh.size(); i++){
-            ret[i] = huh.get(i);
+        }
+        addAndReplace(tree, raw);
+        if(tree.left != null) getLeaves(tree.left);
+        if(tree.right != null) getLeaves(tree.right);
+
+        String[] ret = new String[raw.size()];
+        for(int i=0;i<raw.size();i++){
+            ret[i] = raw.get(i);
         }
         return ret;
     }
-        
-       tree = (addAndReplace(tree.left, height, str));
-       tree = (addAndReplace(tree.right,height, str));
-       huh.add(str.toString());
-       getLeaves(tree.left);
-       getLeaves(tree.right);
-       String[] ret = new String[huh.size()];
-       for(int i=0; i<huh.size(); i++){
-           ret[i] = huh.get(i);
-       }
-       return ret;
-    }
 
-    private TreeNode addAndReplace(TreeNode t, int height, StringBuilder str){
-        if(t == null) return null;
-        if(isLast(t) && height == height(t)){
-            str.append(t.info);
-            
-            t = null;
+    private void addAndReplace(TreeNode tree, ArrayList<String> raw){
+        if ( tree.left == null && tree.right == null){
+            raw.add(""+tree.info);
+            tree = null;
         }
-
-        return t;
-    }
-
-    private boolean isLast(TreeNode t) {
-            if(t.left == null && t.right == null) return true;
-            return false;
+        if(isLeaf(tree.left)){
+            raw.add(""+tree.left.info);
+            tree.left = null;
+        }
+        if(isLeaf(tree.right)){
+            raw.add(""+tree.right.info);
+            tree.right = null;
         }
     }
+
+    private boolean isLeaf(TreeNode root) {
+        if(root == null) return false;
+        if (root.left == null && root.right == null) return true;
+        isLeaf(root.left);
+        isLeaf(root.right);
+        return false;
+    }
+
+}
