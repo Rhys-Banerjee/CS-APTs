@@ -1,7 +1,10 @@
 import java.util.*;
-public class LeafCollector2 {
+public class LeafCollector3 {
     ArrayList<String> raw = new ArrayList<>();
     public String[] getLeaves(TreeNode tree) {
+        if (tree == null) raw.add("");
+        if (tree.left != null) getLeaves(tree.left);
+        if (tree.right != null) getLeaves(tree.right);
         collectAndReplace(tree, raw);
         
         String[] ret = new String[raw.size()];
@@ -15,11 +18,7 @@ public class LeafCollector2 {
         if(isBranch(t)){
             raw.add(""+t.info);
             t = null;
-        }else{
-            raw.add("");
         }
-        if(t.left != null) collectAndReplace(t.left, raw);
-        if(t.right != null) collectAndReplace(t.right, raw);
     }
 
     private boolean isBranch(TreeNode t) {

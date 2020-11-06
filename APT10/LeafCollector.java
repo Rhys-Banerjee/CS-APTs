@@ -1,31 +1,33 @@
 import java.util.*;
 public class LeafCollector {
-    ArrayList<String> raw = new ArrayList<>();
+    List<String> list = new ArrayList<String>();
     public String[] getLeaves(TreeNode tree) {
-        
-        collectAndReplace(tree, raw);
-        if (tree.left != null) getLeaves(tree.left);
-        if (tree.right != null) getLeaves(tree.right);
-        String[] ret = new String[raw.size()];
-        for(int i=0;i<raw.size();i++){
-            ret[i] = raw.get(i);
+        if(tree != null){
+            while(!isLeaf(tree)) {
+                List<String> temp = new ArrayList<String>();
+                collectAndReplace(tree, temp);
+                list.add(String.join(" ",temp));
+            }
+            list.add(""+tree.info);
         }
-        return ret;
+        return list.toArray(new String[0]);
     }
 
-    private void collectAndReplace(TreeNode t, ArrayList<String> raw) {
-        
-        if(isBranch(t)){
-            raw.add(""+t.info);
-            t = null;
-        }
+    private void collectAndReplace(TreeNode t, List<String> temp) {
+        if (isLeaf(t.left)) {
+            temp.add("" + t.left.info);
+            t.left = null;
+        } else if (t.left != null)
+            collectAndReplace(t.left, temp);
+        if (isLeaf(t.right)) {
+            temp.add("" + t.right.info);
+            t.right = null;
+        } else if (t.right != null)
+            collectAndReplace(t.right, temp);
     }
 
-    private boolean isBranch(TreeNode t) {
-        if (t == null) return false;
-        if (t.left == null && t.right == null) return true;
-        isBranch(t.left);
-        isBranch(t.right);
-        return false;
+    private boolean isLeaf(TreeNode t) {
+        if(t != null && t.left == null && t.right == null) return true;
+        else return false;
     }
 }
